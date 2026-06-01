@@ -1,0 +1,65 @@
+name: MorningByte
+
+on:
+  schedule:
+    # 7:00 AM IST = 01:30 UTC
+    - cron: "30 1 * * *"
+    # 8:00 PM IST = 14:30 UTC
+    - cron: "30 16 * * *"
+
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      push_type:
+        description: "Which push to send"
+        required: true
+        default: "morning"
+        type: choice
+        options:
+          - morning
+          - evening
+
+jobs:
+  send-briefing:
+    name: Send Briefing
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Determine push type
+        id: push-type
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ github.event.inputs.push_type }}" >> $GITHUB_OUTPUT
+          else
+            # Detect by UTC hour: 01:30 = morning, 14:30 = evening
+            HOUR=$(date -u +%H)
+            if [ "$HOUR" -lt 10 ]; then
+              echo "type=morning" >> $GITHUB_OUTPUT
+            else
+              echo "type=evening" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Run MorningByte
+        env:
+          MORNINGBYTE_PUSH: ${{ steps.push-type.outputs.type }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NEWSAPI_KEY: ${{ secrets.NEWSAPI_KEY }}
+          CITY_NAME: ${{ vars.CITY_NAME }}
+          CITY_LAT: ${{ vars.CITY_LAT }}
+          CITY_LON: ${{ vars.CITY_LON }}
+          NEWS_COUNTRY: ${{ vars.NEWS_COUNTRY }}
+        run: python src/main.py
+
