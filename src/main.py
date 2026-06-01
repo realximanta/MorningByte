@@ -40,10 +40,10 @@ logger = logging.getLogger("morningbyte")
 
 # ── Config ────────────────────────────────────────────────────────────────────
 # Default location: Nagaon, Assam, India — change to your city.
-DEFAULT_CITY = os.getenv("CITY_NAME", "Nagaon")
-DEFAULT_LAT = float(os.getenv("CITY_LAT", "26.3474"))
-DEFAULT_LON = float(os.getenv("CITY_LON", "92.6843"))
-NEWS_COUNTRY = os.getenv("NEWS_COUNTRY", "us")
+DEFAULT_CITY = "Nagaon"
+DEFAULT_LAT = 26.3474
+DEFAULT_LON = 92.6843
+NEWS_COUNTRY = "in"
 
 
 def format_date() -> str:
