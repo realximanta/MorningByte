@@ -1,7 +1,3 @@
-"""
-telegram.py — Sends formatted HTML messages via Telegram Bot API.
-"""
-
 import logging
 import os
 import requests
@@ -11,15 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 def send_message(text: str) -> bool:
-    """
-    Send an HTML-formatted message to a Telegram chat.
-
-    Args:
-        text: HTML-formatted message string (supports <b>, <i>, <code>, etc.)
-
-    Returns:
-        True if message was sent successfully, False otherwise.
-    """
     bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     chat_id = os.getenv("TELEGRAM_CHAT_ID")
 
@@ -38,7 +25,8 @@ def send_message(text: str) -> bool:
     try:
         response = requests.post(url, json=payload, timeout=10)
         response.raise_for_status()
-        logger.info("Telegram message sent successfully.")
+        logger.info("Telegram delivery successful.")
+        logger.info("Message length: %s chars", len(text))
         return True
 
     except requests.RequestException as e:
@@ -52,18 +40,6 @@ def build_morning_message(
     headlines: Optional[list[str]],
     fact: Optional[dict],
 ) -> str:
-    """
-    Build the morning HTML message.
-
-    Args:
-        date_str: Formatted date string.
-        weather: Dict with city, temperature, condition — or None.
-        headlines: List of headline strings — or None.
-        fact: Dict with title, extract — or None.
-
-    Returns:
-        Formatted HTML string.
-    """
     lines: list[str] = []
 
     lines.append("☀️ <b>MorningByte</b>")
@@ -71,7 +47,6 @@ def build_morning_message(
     lines.append(f"📅 {date_str}")
     lines.append("")
 
-    # Weather
     if weather:
         lines.append(f"🌤 <b>{weather['city']}</b>")
         lines.append(f"{weather['temperature']}°C • {weather['condition']}")
@@ -79,7 +54,6 @@ def build_morning_message(
         lines.append("🌤 Weather unavailable")
     lines.append("")
 
-    # Headlines
     lines.append("📰 <b>Headlines</b>")
     if headlines:
         for i, headline in enumerate(headlines, 1):
@@ -88,7 +62,6 @@ def build_morning_message(
         lines.append("Headlines unavailable.")
     lines.append("")
 
-    # Wikipedia
     lines.append("📚 <b>Wikipedia</b>")
     if fact:
         lines.append(f"<i>{fact['title']}</i>")
@@ -107,17 +80,6 @@ def build_evening_message(
     headlines: Optional[list[str]],
     fact: Optional[dict],
 ) -> str:
-    """
-    Build the evening HTML message.
-
-    Args:
-        date_str: Formatted date string.
-        headlines: List of headline strings — or None.
-        fact: Dict with title, extract — or None.
-
-    Returns:
-        Formatted HTML string.
-    """
     lines: list[str] = []
 
     lines.append("🌙 <b>EveningByte</b>")
@@ -125,7 +87,6 @@ def build_evening_message(
     lines.append(f"📅 {date_str}")
     lines.append("")
 
-    # Headlines
     lines.append("📰 <b>Headlines</b>")
     if headlines:
         for i, headline in enumerate(headlines, 1):
@@ -134,7 +95,6 @@ def build_evening_message(
         lines.append("Headlines unavailable.")
     lines.append("")
 
-    # Wikipedia
     lines.append("📚 <b>Wikipedia</b>")
     if fact:
         lines.append(f"<i>{fact['title']}</i>")
