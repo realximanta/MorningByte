@@ -1,7 +1,3 @@
-"""
-news.py — Fetches top news headlines using NewsAPI.
-"""
-
 import logging
 import os
 import requests
@@ -16,16 +12,6 @@ def get_headlines(
     country: str = "us",
     count: int = 3,
 ) -> Optional[list[str]]:
-    """
-    Fetch top news headlines from NewsAPI.
-
-    Args:
-        country: ISO 3166-1 alpha-2 country code (default: 'us').
-        count: Number of headlines to return (default: 3).
-
-    Returns:
-        List of headline strings, or None on failure.
-    """
     api_key = os.getenv("NEWSAPI_KEY")
     if not api_key:
         logger.error("NEWSAPI_KEY not set in environment.")
