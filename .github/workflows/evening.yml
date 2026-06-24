@@ -1,0 +1,30 @@
+name: EveningByte
+
+on:
+  schedule:
+    - cron: "30 14 * * *"
+  workflow_dispatch:
+
+jobs:
+  evening:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      - run: python src/main.py
+        env:
+          MORNINGBYTE_PUSH: evening
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NEWSAPI_KEY: ${{ secrets.NEWSAPI_KEY }}
+          CITY_NAME: ${{ vars.CITY_NAME }}
+          CITY_LAT: ${{ vars.CITY_LAT }}
+          CITY_LON: ${{ vars.CITY_LON }}
+          NEWS_COUNTRY: ${{ vars.NEWS_COUNTRY }}
