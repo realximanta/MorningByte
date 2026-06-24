@@ -1,14 +1,9 @@
-"""
-weather.py — Fetches current weather using Open-Meteo API (no API key required).
-"""
-
 import logging
 import requests
 from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# WMO Weather Interpretation Codes
 WMO_CODES: dict[int, str] = {
     0: "Clear Sky ☀️",
     1: "Mainly Clear 🌤",
@@ -42,18 +37,6 @@ def get_weather(
     longitude: float,
     city_name: str,
 ) -> Optional[dict]:
-    """
-    Fetch current weather from Open-Meteo.
-
-    Args:
-        latitude: Location latitude.
-        longitude: Location longitude.
-        city_name: Human-readable city label for display.
-
-    Returns:
-        Dict with keys: city, temperature, condition
-        or None on failure.
-    """
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
         "latitude": latitude,
